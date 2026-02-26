@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-USE_MOCK = True  # Flip to False to test real Groq call
+USE_MOCK = False  # Flip to False to test real Groq call
 
 def fact_checker_agent(state: dict) -> dict:
     summary = state["summary"]

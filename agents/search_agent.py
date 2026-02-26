@@ -4,7 +4,7 @@ from tavily import TavilyClient
 
 load_dotenv()
 
-USE_MOCK = True  # Flip to False only when testing real search
+USE_MOCK = False  # Flip to False only when testing real search
 
 def search_agent(state: dict) -> dict:
     topic = state["topic"]
