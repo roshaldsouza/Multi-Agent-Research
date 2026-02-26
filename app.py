@@ -47,48 +47,49 @@ run_button = st.button("🚀 Run Research", type="primary", disabled=not topic)
 if run_button and topic:
     app = build_graph()
 
-    # Progress tracking
     progress = st.progress(0, text="Starting pipeline...")
     status = st.empty()
 
-    with st.spinner("Running agents..."):
+    try:
+        with st.spinner("Running agents..."):
+            status.info("🔍 Search Agent is gathering information...")
+            progress.progress(25, text="Searching the web...")
 
-        # Stream step by step updates
-        status.info("🔍 Search Agent is gathering information...")
-        progress.progress(25, text="Searching the web...")
+            result = app.invoke({"topic": topic})
 
-        result = app.invoke({"topic": topic})
+            progress.progress(50, text="Summarizing findings...")
+            progress.progress(75, text="Fact checking...")
+            progress.progress(100, text="Writing report...")
 
-        progress.progress(50, text="Summarizing findings...")
-        progress.progress(75, text="Fact checking...")
-        progress.progress(100, text="Writing report...")
+        progress.empty()
+        status.empty()
 
-    progress.empty()
-    status.empty()
+        st.success("✅ Research complete!")
 
-    st.success("✅ Research complete!")
+        st.subheader("🔍 Agent Outputs")
 
-    # --- Agent Outputs (expandable) ---
-    st.subheader("🔍 Agent Outputs")
+        with st.expander("Search Agent — Raw Results"):
+            st.text(result["search_results"])
 
-    with st.expander("Search Agent — Raw Results"):
-        st.text(result["search_results"])
+        with st.expander("Summarizer Agent — Summary"):
+            st.write(result["summary"])
 
-    with st.expander("Summarizer Agent — Summary"):
-        st.write(result["summary"])
+        with st.expander("Fact Checker Agent — Fact Check"):
+            st.write(result["fact_check"])
 
-    with st.expander("Fact Checker Agent — Fact Check"):
-        st.write(result["fact_check"])
+        st.divider()
+        st.subheader("📄 Final Research Report")
+        st.markdown(result["report"])
 
-    # --- Final Report (prominent) ---
-    st.divider()
-    st.subheader("📄 Final Research Report")
-    st.markdown(result["report"])
+        st.download_button(
+            label="⬇️ Download Report",
+            data=result["report"],
+            file_name=f"research_{topic[:30].replace(' ', '_')}.md",
+            mime="text/markdown"
+        )
 
-    # --- Download Button ---
-    st.download_button(
-        label="⬇️ Download Report",
-        data=result["report"],
-        file_name=f"research_{topic[:30].replace(' ', '_')}.md",
-        mime="text/markdown"
-    )
+    except Exception as e:
+        progress.empty()
+        status.empty()
+        st.error(f"❌ Something went wrong: {str(e)}")
+        st.info("💡 Check your API keys in the .env file and try again.")
