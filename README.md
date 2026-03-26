@@ -153,12 +153,6 @@ multi-agent-research/
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue to discuss what you'd like to change, or submit a pull request directly for bug fixes.
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
